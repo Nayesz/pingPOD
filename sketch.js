@@ -1,12 +1,17 @@
+let colorPaddle1
+let colorPaddle2
+let cteMovimiento = 5 
 function setup() {
   createCanvas(600, 400)
 
   textSize(32)
   textAlign(CENTER, CENTER)
+  colorPaddle1 = color(213, 216, 136) 
+  colorPaddle2 = color(205, 101, 115) 
 }
 
-let posX = 300
-let posY = 200
+let posBallX = 300
+let posBallY = 200
 let radio = 10
 
 let velocityX = 3
@@ -14,6 +19,7 @@ let velocityY = 3
 
 let paddle1PosX = 10
 let paddle1PosY = 0
+
 let paddle2PosX = 580
 let paddle2PosY = 0
 
@@ -26,69 +32,97 @@ let pointsPlayer2 = 0
 function draw() {
   background(125, 210, 162)
 
-  // restrinjo movimientos de las paletas
-  paddle1PosY = constrain(mouseY, 0, height - paddleheight)
-  paddle2PosY = constrain(mouseY, 0, height - paddleheight)
-
-  noStroke()
-  // dibujo elementos
-  
+  if(keyIsPressed){
+    actualizarPaletas()
+  }
+  noStroke()  
   //Player 1
-  fill(213, 216, 136)
-  rect(paddle1PosX, paddle1PosY, paddleWidth, paddleheight, 5)
+  dibujarPaleta( paddle1PosX,constrain(paddle1PosY,0,height-paddleheight),colorPaddle1)
   //Player 2
-  fill(205, 101, 115) 
-  rect(paddle2PosX, paddle2PosY, paddleWidth, paddleheight, 5)
-  fill(255)
-  ellipse(posX, posY, radio * 2)
-  
+  dibujarPaleta( paddle2PosX,constrain(paddle2PosY,0,height-paddleheight),colorPaddle2)
+  //dibujo pelota
+  dibujarPelota()
+
   // Tablero de puntos
-  text(pointsPlayer1, width/2 - 30, 30)
-  text(pointsPlayer2, width/2 + 30, 30)
+  dibujarTablero()
 
   // red, divide las canchas
-  stroke(255)
-  strokeWeight(2)
-  line(width / 2, 0, width / 2, height)
+  dibujarRed()
   
-  posX += velocityX
-  posY += velocityY
+  //movimiento de pelota
+  posBallX += velocityX
+  posBallY += velocityY
 
-  if (posY >= height - radio || posY <= radio) {
+  //rebote de pelota en y
+  if (posBallY >= height - radio || posBallY <= radio) {
     velocityY *= -1
   }
+  //Rebote de pelota en paleta
+  let ballInRangeX = posBallX <= paddle1PosX + paddleWidth + radio
+  let ballInRange2X = posBallX >= paddle2PosX - (paddleWidth - radio)
 
-  //player 1
-  let ballInRangeY = posY >= mouseY && posY <= mouseY + paddleheight
-  let ballInRangeX = posX <= paddle1PosX + paddleWidth + radio
-
-  if (ballInRangeX && ballInRangeY) {
+  if( (hayReboteEnPaletaY(paddle1PosY) && ballInRangeX ) || (hayReboteEnPaletaY(paddle2PosY) && ballInRange2X )) {
     velocityX *= -1
   }
-
-  // player 2
-  let ballInRange2Y = posY >= mouseY && posY <= mouseY + paddleheight
-  let ballInRange2X = posX >= paddle2PosX - (paddleWidth - radio)
-
-  if (ballInRange2X && ballInRange2Y) {
-    velocityX *= -1
-  }
-
   // anota player 1
-  if(posX > width){
-    posX = random(width/2, width/2) // saque del centro
-    posY = height/2
-    velocityX *= -1
+  if(posBallX > width){
+    sacarDeNuevo()
     pointsPlayer1++
   }
-
   // anota player 2
-  if(posX < 0){
-    posX = random(width/2, width/2) // saque del centro
-    posY = height/2
-    velocityX *= -1
+  if(posBallX < 0){
+    sacarDeNuevo()
     pointsPlayer2++
   }
 }
 
-// TODO Agregar mando indivual con teclas para cada jugador
+
+function actualizarPaletas(){
+
+  if (keyCode == UP_ARROW){
+    paddle2PosY-=cteMovimiento
+  }
+  if (keyCode == DOWN_ARROW){
+    paddle2PosY+=cteMovimiento
+  }
+  if( key == 'w' || key == 'W'){
+    paddle1PosY-=cteMovimiento
+  }
+  if( key == 's' || key == 'S'){
+    paddle1PosY+=cteMovimiento
+  }
+
+}
+
+function dibujarPaleta( posicionX,posicionY,color){
+  fill(color)
+  rect(posicionX, posicionY, paddleWidth, paddleheight, 5)
+}
+function dibujarRed(){
+  stroke(255)
+  strokeWeight(2)
+  line(width / 2, 0, width / 2, height)
+}
+
+function dibujarPelota(){
+  fill(255)
+  ellipse(posBallX, posBallY, radio * 2)
+  
+}
+
+function dibujarTablero(){
+  text(pointsPlayer1, width/2 - 30, 30)
+  text(pointsPlayer2, width/2 + 30, 30)
+}
+
+function hayReboteEnPaletaY(posicionY){
+  return posBallY >= posicionY && posBallY <= posicionY + paddleheight
+
+}
+
+function sacarDeNuevo(){
+    posBallX = width/2 // saque del centro
+    posBallY = random(0,height/2)
+    velocityX *= -1
+}
+
