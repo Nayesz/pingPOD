@@ -1,14 +1,5 @@
 let colorPaddle1
 let colorPaddle2
-let cteMovimiento = 5 
-function setup() {
-  createCanvas(600, 400)
-
-  textSize(32)
-  textAlign(CENTER, CENTER)
-  colorPaddle1 = color(213, 216, 136) 
-  colorPaddle2 = color(205, 101, 115) 
-}
 
 let posBallX = 300
 let posBallY = 200
@@ -29,17 +20,35 @@ let paddleheight = 50
 let pointsPlayer1 = 0
 let pointsPlayer2 = 0
 
+let steps = 5 
+let topeSupPaddle
+
+function setup() {
+  createCanvas(600, 400)
+
+  textSize(32)
+  textAlign(CENTER, CENTER)
+  colorPaddle1 = color(213, 216, 136) 
+  colorPaddle2 = color(205, 101, 115) 
+  topeSupPaddle = height-paddleheight
+
+}
+
+
 function draw() {
   background(125, 210, 162)
 
   if(keyIsPressed){
     actualizarPaletas()
   }
+
   noStroke()  
   //Player 1
-  dibujarPaleta( paddle1PosX,constrain(paddle1PosY,0,height-paddleheight),colorPaddle1)
+  dibujarPaleta( paddle1PosX,paddle1PosY,colorPaddle1)
+
   //Player 2
-  dibujarPaleta( paddle2PosX,constrain(paddle2PosY,0,height-paddleheight),colorPaddle2)
+  dibujarPaleta( paddle2PosX,paddle2PosY,colorPaddle2)
+
   //dibujo pelota
   dibujarPelota()
 
@@ -80,16 +89,17 @@ function draw() {
 function actualizarPaletas(){
 
   if (keyCode == UP_ARROW){
-    paddle2PosY-=cteMovimiento
+    paddle2PosY= constrain(paddle2PosY-steps,0,topeSupPaddle)
   }
   if (keyCode == DOWN_ARROW){
-    paddle2PosY+=cteMovimiento
+    paddle2PosY= constrain(paddle2PosY+steps,0,topeSupPaddle)
   }
   if( key == 'w' || key == 'W'){
-    paddle1PosY-=cteMovimiento
+    paddle1PosY= constrain(paddle1PosY-steps,0,topeSupPaddle)
   }
   if( key == 's' || key == 'S'){
-    paddle1PosY+=cteMovimiento
+    paddle1PosY= constrain(paddle1PosY+steps,0,topeSupPaddle)
+
   }
 
 }
