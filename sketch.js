@@ -25,7 +25,6 @@ let topeSupPaddle
 
 function setup() {
   createCanvas(600, 400)
-
   textSize(32)
   textAlign(CENTER, CENTER)
   colorPaddle1 = color(213, 216, 136) 
@@ -37,25 +36,23 @@ function setup() {
 
 function draw() {
   background(125, 210, 162)
-
+ 
   if(keyIsPressed){
     actualizarPaletas()
   }
+
 
   noStroke()  
   //Player 1
   dibujarPaleta( paddle1PosX,paddle1PosY,colorPaddle1)
 
-  //Player 2
+  //player 2
   dibujarPaleta( paddle2PosX,paddle2PosY,colorPaddle2)
 
-  //dibujo pelota
   dibujarPelota()
-
-  // Tablero de puntos
+  
   dibujarTablero()
-
-  // red, divide las canchas
+  
   dibujarRed()
   
   //movimiento de pelota
@@ -99,15 +96,17 @@ function actualizarPaletas(){
   }
   if( key == 's' || key == 'S'){
     paddle1PosY= constrain(paddle1PosY+steps,0,topeSupPaddle)
-
   }
-
 }
 
-function dibujarPaleta( posicionX,posicionY,color){
+function dibujarPaleta(posicionX,posicionY,color){
   fill(color)
-  rect(posicionX, posicionY, paddleWidth, paddleheight, 5)
+  rect(posicionX, posicionY, paddleWidth, paddleheight,5)
 }
+
+
+
+
 function dibujarRed(){
   stroke(255)
   strokeWeight(2)
@@ -117,10 +116,9 @@ function dibujarRed(){
 function dibujarPelota(){
   fill(255)
   ellipse(posBallX, posBallY, radio * 2)
-  
 }
 
-function dibujarTablero(){
+function dibujarTablero(puntos,posLetraX,posLetraY){
   text(pointsPlayer1, width/2 - 30, 30)
   text(pointsPlayer2, width/2 + 30, 30)
 }
